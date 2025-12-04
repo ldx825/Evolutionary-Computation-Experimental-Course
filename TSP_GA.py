@@ -16,7 +16,7 @@ class Life(object):
 random.seed(42) 
 
 # 2) 读取城市坐标（文件每行：城市名 \t x \t y）
-CITY_FILE = "D:\\大二上-吉大相关\\演化计算代码作业\\TSP_all\\distanceMatrix.txt"
+CITY_FILE = "D:\\大二上-吉大相关\\演化计算代码作业\\Evolutionary_Computation_Experimental_Course\\distanceMatrix.txt"
 citys = []
 with open(CITY_FILE, "r", encoding='utf-8') as f:
     for line in f:
@@ -29,7 +29,11 @@ with open(CITY_FILE, "r", encoding='utf-8') as f:
 # 3) 定义超参数
 LIFE_COUNT = 150
 CROSS_RATE = 0.9
+# 消融实验：
+# CROSS_RATE = 0.0
 MUTATION_RATE = 0.05
+# 消融实验
+# MUTATION_RATE = 0.0
 MAX_GENERATIONS = 2000
 
 # 4) 初始化种群
@@ -85,6 +89,12 @@ for gen in range(MAX_GENERATIONS):
             if random_num < i :
                 selected_lives.append(Life(life.gene[:]))
                 break
+    # # 消融实验：修改为随机选择
+    # selected_lives = []
+    # for _ in range(int(LIFE_COUNT * CROSS_RATE)):
+    #     # 直接从种群中随机选择一个个体
+    #     chosen = random.choice(new_lives)
+    #     selected_lives.append(Life(chosen.gene[:]))
     
     # 交配
     mated_lives =[]
@@ -101,7 +111,45 @@ for gen in range(MAX_GENERATIONS):
             t = a
             a = b
             b = t
+        # 消融实验：仅使用部分映射交叉！！
+        # if True:
 
+        #     for j in range(a, b+1):
+        #         fa = parent1.gene[j] 
+        #         fb = parent2.gene[j]
+        #         for i in range(0,gene_length):
+        #             if parent1.gene[i] == fb:
+        #                 parent1.gene[i] = fa
+        #         parent1.gene[j] = fb
+        #         for i in range(0,gene_length):
+        #             if parent2.gene[i] == fa:
+        #                 parent2.gene[i] = fb
+        #         parent2.gene[j] = fa
+
+        # if o == 1:
+
+        #     for j in range(a, b+1):
+        #         fa = parent1.gene[j] 
+        #         fb = parent2.gene[j]
+        #         for i in range(0,gene_length):
+        #             if parent1.gene[i] == fb:
+        #                 parent1.gene[i] = fa
+        #         parent1.gene[j] = fb
+        #         for i in range(0,gene_length):
+        #             if parent2.gene[i] == fa:
+        #                 parent2.gene[i] = fb
+        #         parent2.gene[j] = fa
+            
+        # # 进行顺序交叉
+        # if True:
+        #     list1 = parent1.gene[a:b]
+        #     list2 = parent2.gene[a:b]
+        #     left_list1 = [x for x in parent2.gene if x not in list1]
+        #     left_list2 = [x for x in parent1.gene if x not in list2]
+
+        #     parent1.gene = left_list1[:a] + list1 + left_list1[a:]
+        #     parent2.gene = left_list2[:a] + list2 + left_list2[a:]
+            
         # 进行部分映射交叉（1/3）的概率
         if o == 1:
 
@@ -132,30 +180,55 @@ for gen in range(MAX_GENERATIONS):
 
 
     # 变异
+    # 消融实验：仅使用交换变异
     for life in mated_lives:
         k = random.random()
         if k < MUTATION_RATE:
             t = random.randint(1,3)
             # 交换变异
-            if t == 1:
+            if True:
                 a = random.randint(0,33)
                 b = random.randint(0,33)
                 t = life.gene[a]
                 life.gene[a] = life.gene[b]
                 life.gene[b] = t
-            # 反序变异
-            if t == 2:
-                a = random.randint(0,33)
-                b = random.randint(0,33)
-                list1 = life.gene[a:b]
-                list1.reverse()
-                life.gene[a:b] = list1
-            # 插入变异
-            if t == 3:
-                a = random.randint(0,33)
-                b = random.randint(0,33)
-                c = life.gene.pop(b)
-                life.gene.insert(a,c)
+    #         # 反序变异
+    #         if t == 2:
+    #             a = random.randint(0,33)
+    #             b = random.randint(0,33)
+    #             list1 = life.gene[a:b]
+    #             list1.reverse()
+    #             life.gene[a:b] = list1
+    #         # 插入变异
+    #         if t == 3:
+    #             a = random.randint(0,33)
+    #             b = random.randint(0,33)
+    #             c = life.gene.pop(b)
+    #             life.gene.insert(a,c)
+    # for life in mated_lives:
+    #     k = random.random()
+    #     if k < MUTATION_RATE:
+    #         t = random.randint(1,3)
+    #         # 交换变异
+    #         if t == 1:
+    #             a = random.randint(0,33)
+    #             b = random.randint(0,33)
+    #             t = life.gene[a]
+    #             life.gene[a] = life.gene[b]
+    #             life.gene[b] = t
+    #         # 反序变异
+    #         if t == 2:
+    #             a = random.randint(0,33)
+    #             b = random.randint(0,33)
+    #             list1 = life.gene[a:b]
+    #             list1.reverse()
+    #             life.gene[a:b] = list1
+    #         # 插入变异
+    #         if t == 3:
+    #             a = random.randint(0,33)
+    #             b = random.randint(0,33)
+    #             c = life.gene.pop(b)
+    #             life.gene.insert(a,c)
     
         
     # 重新评估适应度
@@ -176,6 +249,7 @@ for gen in range(MAX_GENERATIONS):
     #             break
 
     # 使用锦标赛更新个体
+    # 消融实验：消除精英保留机制！
     next_lives.append(Life(best.gene[:])) # 这是之前保留的最佳个体
     new_lives += mated_lives
     for j in range(LIFE_COUNT - 1 ):
@@ -184,6 +258,16 @@ for gen in range(MAX_GENERATIONS):
             next_lives.append(Life(a.gene[:]))
         else:
             next_lives.append(Life(b.gene[:]))
+    # # 消融实验：使用随机选择
+    # # 使用随机选择更新个体
+    # next_lives.append(Life(best.gene[:]))  # 保留最优个体
+    # new_lives += mated_lives  # 合并父子代
+
+    # # 改为纯随机选择（不考虑适应度）
+    # for _ in range(LIFE_COUNT - 1):
+    #     # 随机选择一个个体
+    #     chosen = random.choice(new_lives)
+    #     next_lives.append(Life(chosen.gene[:]))
     # 更新种群
     lives = next_lives[:]
 
@@ -206,7 +290,7 @@ plt.ylabel('length', fontsize=40)
 plt.legend(fontsize=40)
 plt.tick_params(axis='both', labelsize=40)
 # 保存收敛图单独文件
-plt.savefig(f'D:\\大二上-吉大相关\\演化计算代码作业\\TSP_all\\TSP_GA\\TSP_GA_convergence_history_NP={LIFE_COUNT}_Generation={MAX_GENERATIONS}_CR={CROSS_RATE}_MR={MUTATION_RATE}.pdf', dpi=500)
+plt.savefig(f'D:\\大二上-吉大相关\\演化计算代码作业\\Evolutionary_Computation_Experimental_Course\\TSP_GA\\ablation_TSP_GA_convergence_history_NP={LIFE_COUNT}_Generation={MAX_GENERATIONS}_CR={CROSS_RATE}_MR={MUTATION_RATE}.pdf', dpi=500)
 plt.close()
 
 # 保存最优路径图
@@ -222,5 +306,5 @@ plt.ylabel('y', fontsize=40)
 plt.tick_params(axis='both', labelsize=40)
 
 # 保存路径图单独文件
-plt.savefig(f'D:\\大二上-吉大相关\\演化计算代码作业\\TSP_all\\TSP_GA\\TSP_GA_best_path_NP={LIFE_COUNT}_Generation={MAX_GENERATIONS}_CR={CROSS_RATE}_MR={MUTATION_RATE}.pdf', dpi=500)
+plt.savefig(f'D:\\大二上-吉大相关\\演化计算代码作业\\Evolutionary_Computation_Experimental_Course\\TSP_GA\\ablation_TSP_GA_best_path_NP={LIFE_COUNT}_Generation={MAX_GENERATIONS}_CR={CROSS_RATE}_MR={MUTATION_RATE}.pdf', dpi=500)
 plt.close()
